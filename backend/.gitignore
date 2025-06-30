@@ -1,0 +1,4 @@
+# .env
+# internal/api/.DS_Store
+cmd/test/
+.env
