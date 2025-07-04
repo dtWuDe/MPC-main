@@ -126,7 +126,6 @@ func updateCachePeriodically() {
 
 func checkLatestBlock(client *ethclient.Client) {
 	monitoredAddresses, _ = getMonitoredAddressesFromRedis()
-
 	block, err := client.BlockByNumber(ctx, nil)
 	if err != nil {
 		log.Printf("Error getting latest block: %v", err)
@@ -135,12 +134,12 @@ func checkLatestBlock(client *ethclient.Client) {
 
 	fmt.Printf("Scanning Block #%d...\n", block.NumberU64())
 
-	for _, tx := range block.Transactions() {
+	for i, tx := range block.Transactions() {
 		if tx.To() == nil {
 			continue
 		}
-
-		from, err := client.TransactionSender(ctx, tx, block.Header().Hash(), 0)
+		log.Printf("Processing transaction %s", tx.Hash().Hex())
+		from, err := client.TransactionSender(ctx, tx, block.Header().Hash(), uint(i))
 		if err != nil {
 			log.Printf("Error getting sender: %v", err)
 			continue

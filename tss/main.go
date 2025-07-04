@@ -19,7 +19,7 @@ import (
 func initializeServers(cfg *config.Config) ([]config.Node, error) {
 	parts := strings.Split(cfg.Node.Address, ":")
 	if len(parts) != 2 {
-		return nil, fmt.Errorf("invalid address format: %s", cfg.Node.Address)
+		return nil, fmt.Errorf("invalid address format: %s", parts)
 	}
 
 	basePort, err := strconv.Atoi(parts[1])
@@ -109,5 +109,6 @@ func main() {
 	defer dbPool.Close()
 
 	peerMap := createPeerMap(servers)
+	log.Printf("Starting %d TSS servers...", len(servers))
 	startAllServers(servers, peerMap, dbPool, cfg)
 }

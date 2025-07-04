@@ -8,7 +8,7 @@ import { RootState } from "../../store";
 import { addAccessToken, removeAccessToken } from "../../auth/authSlice";
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: import.meta.env.VITE_API_URL,
+  baseUrl: "http://localhost:5001",//import.meta.env.VITE_API_URL, // -change
   prepareHeaders: (headers, { getState }) => {
     const accessToken = (getState() as RootState).auth.accessToken;
     if (accessToken) {
@@ -28,7 +28,7 @@ const baseQueryWithReauth: BaseQueryFn<
   if (result.error && result.error.status === 401) {
     const refreshResult = await baseQuery(
       {
-        url: "/api/v1/user/refresh-token",
+        url: "/api/v1/auth/refresh",
         method: "POST",
         credentials: "include",
       },

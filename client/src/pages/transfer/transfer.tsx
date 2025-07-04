@@ -14,8 +14,8 @@ const Transfer = () => {
   const [userData, setUserData] = useState<User>();
   const navigate = useNavigate();
 
-  const currencies = wallet?.data.walletData.currencies;
-
+  const currencies = wallet?.payload.wallet;
+  console.log("currencies", currencies);
   const handleStepTransfer = (step_change: string) => {
     if (step_change === "home") {
       navigate("/");
