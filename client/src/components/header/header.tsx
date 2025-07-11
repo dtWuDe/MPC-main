@@ -27,6 +27,7 @@
 import { Link } from "react-router-dom";
 import { useGetProfileQuery } from "../../redux/features/profile/profileApi";
 import AuthImg from "../../assets/png/auth_img1.jpg";
+import { NonceManager } from "ethers";
 
 export default function Header() {
   const { data: user } = useGetProfileQuery();
@@ -43,7 +44,7 @@ export default function Header() {
         <div class={`ml-auto`}>
           <img
             class={`w-14 h-14 object-cover rounded-full`}
-            src={user?.data.userData.avatar}
+            //src={user?.data.userData.avatar} // -change
             alt="User avatar"
           />
         </div>

@@ -1,4 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
+import { clearMessage, addAccessToken } from "./authSlice";
+import { useAppDispatch, useAppSelector } from "../hooks";
 import axios from "axios";
 
 interface User {
@@ -18,16 +20,19 @@ export const loginUsers = createAsyncThunk(
   "auth/loginUser",
   async (
     { user, navigate }: { user: User; navigate: (path: string) => void },
-    { rejectWithValue }
+    { rejectWithValue, dispatch  }
   ) => {
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/user/signin`,
+        'http://localhost:5001/api/v1/auth/login',//`${import.meta.env.VITE_API_URL}/api/v1/user/signin`,
         user,
         { withCredentials: true }
       );
       if (res.status === 200) {
-        navigate("/auth/login/verify-login");
+        navigate("/");
+        dispatch(clearMessage("login"));
+        dispatch(addAccessToken(res.data.payload.access_token));
+        
         const { email } = user;
         return { ...res.data, email };
       } else {
@@ -50,7 +55,7 @@ export const registerUsers = createAsyncThunk(
   ) => {
     try {
       const res = await axios.post(
-        'http://localhost:5001/api/v1/user/signup', //`${import.meta.env.VITE_API_URL}/api/v1/user/signup`,
+        'http://localhost:5001/api/v1/auth/signup', //`${import.meta.env.VITE_API_URL}/api/v1/user/signup`,
         user
       );
       if (res.status === 200) {

@@ -3,10 +3,12 @@ package handler
 import (
 	"mpc/internal/model"
 	"mpc/internal/service"
+	"mpc/pkg/logger"
 	"mpc/pkg/utils"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type TransactionHandler struct {
@@ -44,7 +46,7 @@ func (h *TransactionHandler) GetTransactions(c *gin.Context) {
 	walletAddress := c.Query("wallet_address")
 	page, _ := strconv.Atoi(c.DefaultQuery("page", "1"))
 	pageSize, _ := strconv.Atoi(c.DefaultQuery("page_size", "10"))
-
+	logger.Debug("wallet address", zap.String("wallet_address", walletAddress))
 	res, err := h.txnService.GetTransactions(c.Request.Context(), userID, chainID, walletAddress, page, pageSize)
 	if err != nil {
 		c.Error(err)

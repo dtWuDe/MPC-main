@@ -17,6 +17,7 @@ const onRefreshed = () => {
 export const createAxios = () => {
   const store = getStore();
   const accessToken = store.getState().auth.accessToken;
+  console.log("Access Token:", accessToken);
 
   const newInstance = axios.create({
     baseURL: 'http://localhost:5001',//import.meta.env.VITE_API_URL,
@@ -46,7 +47,7 @@ export const createAxios = () => {
           isRefreshing = true;
           try {
             const response = await newInstance.post(
-              `/api/v1/user/refresh-token`,
+              `/api/v1/auth/refresh`, // `/api/v1/user/refresh-token`,
               { withCredentials: true }
             );
             if (response.status === 200) {
