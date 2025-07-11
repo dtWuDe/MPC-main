@@ -4,14 +4,21 @@ import { getTransactionPaginate } from "../../services/api/transaction.api";
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import EmptyTrans from "../../assets/png/empty_transaction.jpg";
-const RecentTransaction: React.FC = () => {
+
+
+interface props {
+  wallet_address: string;
+}
+
+const RecentTransaction: React.FC<props> = ({ wallet_address }) => {
   const { data, isLoading } = useQuery({
     queryFn: async () => {
-      const response = await getTransactionPaginate(1, 5);
-      return response.data;
+      const response = await getTransactionPaginate(wallet_address, 1, 5);
+      return response.data.payload;
     },
     queryKey: ["recent-transaction"],
   });
+  console.log("data", data);
   if (isLoading) {
     return (
       <>
@@ -38,11 +45,11 @@ const RecentTransaction: React.FC = () => {
   }
   return (
     <div>
-      {!isLoading && data?.data?.transactions?.transactions?.length > 0 ? (
-        data?.data?.transactions?.transactions.map((item: any, key: any) => (
+      {!isLoading && data?.transactions?.length > 0 ? (
+        data?.transactions?.map((item: any, key: any) => (
           <ItemTransaction
             item={item}
-            userID={data.data.id}
+            wallet_address={wallet_address}
             key={key}
             icon={USDTIcon}
           />

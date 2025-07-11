@@ -33,6 +33,7 @@ const DrawerBottom: React.FC<BottomDrawerProps> = ({
         ...data,
         security_code: value,
       };
+      
       try {
         setIsLoading(true);
         const response = await sendMoneyAPI(body);

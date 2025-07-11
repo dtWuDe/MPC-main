@@ -81,7 +81,7 @@ export default function App() {
   return (
     <Router>
       <Routes>
-         {/* <Route element={<ProtectRoutes />}> */}
+         <Route element={<ProtectRoutes />}>
           <Route element={<AuthenticatedLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/setting" element={<Setting />} />
@@ -124,7 +124,7 @@ export default function App() {
           </Route>
 
           <Route path="*" element={<PageNotFound />} />
-         {/* </Route>  */}
+         </Route> 
 
         <Route element={<RegisteredRoute />}>
           <Route element={<NonAuthenticatedLayout />}>

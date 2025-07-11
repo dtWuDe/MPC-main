@@ -4,18 +4,18 @@ import InputAmount from "./input_amount";
 import SelectCurrency from "./select_currency";
 import { useState } from "react";
 import { Currency, User } from "../../types/transfer";
-
 import { useGetProfileQuery } from "../../redux/features/profile/profileApi";
 
+
 const Transfer = () => {
-  const { data: wallet, isLoading } = useGetProfileQuery();
+  const { data, isLoading } = useGetProfileQuery();
   const [step, setStep] = useState("select_currency");
   const [selectCurrency, setSelectCurrency] = useState<Currency>();
   const [userData, setUserData] = useState<User>();
   const navigate = useNavigate();
+  
 
-  const currencies = wallet?.payload.wallet;
-  console.log("currencies", currencies);
+  const currencies = data?.payload.wallet;
   const handleStepTransfer = (step_change: string) => {
     if (step_change === "home") {
       navigate("/");
@@ -54,6 +54,7 @@ const Transfer = () => {
           currencyData={selectCurrency}
           userData={userData}
           handleStepTransfer={handleStepTransfer}
+          wallet={currencies}
         />
       );
     default:

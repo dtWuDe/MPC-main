@@ -7,7 +7,7 @@ const TransferLayout = () => {
 
   useEffect(() => {
     if (location.pathname === "/transfer") {
-      navigate("/transfer/select-currency");
+      navigate("/transfer");
     }
   }, [location.pathname, navigate]);
 

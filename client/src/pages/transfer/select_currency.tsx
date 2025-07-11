@@ -5,6 +5,9 @@ import HeaderDefault from "../../components/header/header_default";
 import VNDIcon from "../../assets/png/vnd_icon.jpg";
 import USDIcon from "../../assets/png/usd_icon.png";
 import ETHIcon from "../../assets/png/eth_icon.png";
+
+
+
 type Props = {
   currency: any;
   handleStepTransfer: (key: string) => void;
@@ -18,6 +21,8 @@ const SelectCurrency: React.FC<Props> = ({ ...props }) => {
   const handleCurrencyData = (data: any) => {
     props.handleCurrencyData(data);
   };
+
+
   return (
     <div class={`container-center`}>
       <HeaderDefault title="Chọn loại tiền"></HeaderDefault>
@@ -76,7 +81,7 @@ const ItemCurrency = ({ ...props }) => {
       </div>
       <div>
         <h1 className={`w-full font-semibold text-xl text-end`}>
-          {formatCurrency(props.wallet.balance, "VND")}
+          {/* {formatCurrency(props.wallet.balance, "VND")} */}
         </h1>
       </div>
     </div>

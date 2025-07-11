@@ -2,7 +2,7 @@ import axios from "axios";
 import { createAxios } from "../../config/axios.config";
 export const loginAPI = async (body: any) => {
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/api/v1/user/signin`,
+    "http://localhost:5001/api/v1/auth/login",//`${import.meta.env.VITE_API_URL}/api/v1/user/signin`, // for testing purposes
     body,
     {
       withCredentials: true,
@@ -34,7 +34,7 @@ export const verifyRegisterAPI = async (body: any) => {
 
 export const registerAPI = async (body: any) => {
   const response = await axios.post(
-    `${import.meta.env.VITE_API_URL}/api/v1/user/signup`,
+    "http://localhost:5001/api/v1/auth/signup",//`${import.meta.env.VITE_API_URL}/api/v1/user/signup`, // for testing purposes
     body,
     {
       withCredentials: true,

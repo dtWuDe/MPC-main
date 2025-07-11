@@ -17,8 +17,6 @@ const onRefreshed = () => {
 export const createAxios = () => {
   const store = getStore();
   const accessToken = store.getState().auth.accessToken;
-  console.log("Access Token:", accessToken);
-
   const newInstance = axios.create({
     baseURL: 'http://localhost:5001',//import.meta.env.VITE_API_URL,
     timeout: 10000,
