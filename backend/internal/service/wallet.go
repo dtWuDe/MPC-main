@@ -5,6 +5,7 @@ import (
 	"mpc/internal/model"
 	"mpc/internal/repository"
 	"mpc/pkg/errors"
+	"mpc/pkg/ethereum"
 	"mpc/pkg/logger"
 	"mpc/pkg/tss"
 	"strings"
@@ -15,12 +16,14 @@ import (
 type WalletService struct {
 	walletRepo *repository.WalletRepository
 	tssClient  *tss.TSS
+	ethClient  *ethereum.EthClient
 }
 
-func NewWalletService(walletRepo *repository.WalletRepository, tssClient *tss.TSS) *WalletService {
+func NewWalletService(walletRepo *repository.WalletRepository, tssClient *tss.TSS, ethClient *ethereum.EthClient) *WalletService {
 	return &WalletService{
 		walletRepo: walletRepo,
 		tssClient:  tssClient,
+		ethClient:  ethClient,
 	}
 }
 
@@ -52,4 +55,27 @@ func (s *WalletService) GetWalletByUserID(ctx context.Context, userID uuid.UUID)
 		return model.Wallet{}, errors.ErrWalletNotFound
 	}
 	return wallets[0], nil
+}
+
+func (s *WalletService) GetBalanceByAddress(
+	ctx context.Context,
+	request model.GetBalanceRequest,
+	userID uuid.UUID,
+) (model.GetBalanceResponse, error) {
+	wallet, err := s.GetWalletByUserID(ctx, userID)
+	if err != nil {
+		logger.Error("Service:GetBalance", err)
+		return model.GetBalanceResponse{}, err
+	}
+	address := strings.ToLower(wallet.Address)
+	balance, err := s.ethClient.GetBalance(ctx, address)
+	if err != nil {
+		logger.Error("Service:GetBalance", err)
+		return model.GetBalanceResponse{}, err
+	}
+
+	return model.GetBalanceResponse{
+		Address: wallet.Address,
+		Balance: balance,
+	}, nil
 }

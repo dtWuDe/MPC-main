@@ -78,6 +78,7 @@ func (t *TSS) CreateWallet(ctx context.Context, sessionID string) (shareData str
 
 	// Wait for results with timeout
 	shareData, publicKey, err = processKeygenResult(ctx, pubsub.Channel())
+	// logger.Debug(fmt.Sprintf("Keygen result received: shareData=%s, publicKey=%s", shareData, publicKey))
 	if err != nil {
 		return "", "", fmt.Errorf("key generation failed: %w", err)
 	}

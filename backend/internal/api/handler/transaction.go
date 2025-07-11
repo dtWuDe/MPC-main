@@ -76,6 +76,7 @@ func (h *TransactionHandler) CreateAndSubmitTransaction(c *gin.Context) {
 		c.Error(err)
 		return
 	}
+	logger.Debug("CreateAndSubmitTransaction request")
 
 	res, err := h.txnService.CreateAndSubmitTransaction(c.Request.Context(), userID, req)
 	if err != nil {

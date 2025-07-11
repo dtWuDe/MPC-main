@@ -16,7 +16,31 @@ type CorsConfig struct {
 // DefaultCorsConfig returns the default CORS configuration
 func DefaultCorsConfig() CorsConfig {
 	return CorsConfig{
-		AllowOrigins: []string{"*"},
+		// AllowOrigins: []string{"*"},
+		// AllowMethods: []string{
+		// 	"GET",
+		// 	"POST",
+		// 	"PUT",
+		// 	"PATCH",
+		// 	"DELETE",
+		// 	"OPTIONS",
+		// },
+		// AllowHeaders: []string{
+		// 	"Origin",
+		// 	"Content-Type",
+		// 	"Content-Length",
+		// 	"Accept-Encoding",
+		// 	"X-CSRF-Token",
+		// 	"Authorization",
+		// 	"Accept",
+		// 	"Cache-Control",
+		// 	"X-Requested-With",
+		// },
+		// ExposeHeaders:    []string{"Content-Length"},
+		// AllowCredentials: true,
+
+		// for development purposes, allow origins from localhost
+		AllowOrigins: []string{"http://localhost:5173"},
 		AllowMethods: []string{
 			"GET",
 			"POST",
@@ -62,7 +86,9 @@ func CorsWithConfig(config CorsConfig) gin.HandlerFunc {
 		}
 
 		// Set other headers
-		c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		if config.AllowCredentials {
+			c.Writer.Header().Set("Access-Control-Allow-Credentials", "true")
+		}
 		c.Writer.Header().Set("Access-Control-Allow-Methods",
 			joinStrings(config.AllowMethods))
 		c.Writer.Header().Set("Access-Control-Allow-Headers",

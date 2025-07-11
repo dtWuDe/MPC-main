@@ -78,6 +78,23 @@ func (c *EthClient) IsEnoughBalance(ctx context.Context, address string, amount 
 	return balance.Cmp(amountWei) >= 0, nil
 }
 
+func (c *EthClient) GetBalance(ctx context.Context, address string) (string, error) {
+	if !common.IsHexAddress(address) {
+		return "", fmt.Errorf("invalid address: %s", address)
+	}
+	addr := common.HexToAddress(address)
+	balance, err := c.client.BalanceAt(ctx, addr, nil)
+	if err != nil {
+		return "", fmt.Errorf("failed to fetch balance: %w", err)
+	}
+
+	ethValue := new(big.Float).Quo(new(big.Float).SetInt(balance), big.NewFloat(1e18))
+
+	strethValue := ethValue.Text('f', 18)
+
+	return strethValue, nil
+}
+
 // validateTransactionInputs checks the recipient address and converts the amount to Wei
 func (c *EthClient) validateTransactionInputs(address string, amount string) (common.Address, *big.Int, error) {
 	if !common.IsHexAddress(address) {

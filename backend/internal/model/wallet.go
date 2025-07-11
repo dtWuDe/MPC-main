@@ -23,3 +23,12 @@ type WalletResponse struct {
 	Address string    `json:"address" example:"0x0000000000000000000000000000000000000000"`
 	Name    string    `json:"name" example:"My Wallet"`
 }
+
+type GetBalanceRequest struct {
+	Address string `json:"address" validate:"required"`
+}
+
+type GetBalanceResponse struct {
+	Address string `json:"address" validate:"required"`
+	Balance string `json:"balance" validate:"required"` // Balance in wei
+}
