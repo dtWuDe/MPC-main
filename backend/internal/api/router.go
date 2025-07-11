@@ -19,6 +19,7 @@ func NewRouter(
 	userService *service.UserService,
 	txnService *service.TransactionService,
 	tokenManager *token.TokenManager,
+	walletService *service.WalletService,
 ) *gin.Engine {
 	// Disable default logger
 	gin.SetMode(gin.ReleaseMode)
@@ -37,6 +38,7 @@ func NewRouter(
 	assetHandler := handler.NewAssetHandler(assetService)
 	userHandler := handler.NewUserHandler(userService)
 	txnHandler := handler.NewTransactionHandler(txnService)
+	walletHandler := handler.NewWalletHandler(walletService)
 
 	v1 := router.Group("/api/v1")
 	{
@@ -68,6 +70,12 @@ func NewRouter(
 		{
 			transactions.GET("", txnHandler.GetTransactions)
 			transactions.POST("/", txnHandler.CreateAndSubmitTransaction)
+		}
+
+		wallet := v1.Group("/wallets")
+		wallet.Use(middleware.AuthMiddleware(tokenManager))
+		{
+			wallet.GET("/balance", walletHandler.GetBalance)
 		}
 
 		// Redirect to swagger docs

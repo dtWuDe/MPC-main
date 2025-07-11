@@ -77,13 +77,13 @@ func main() {
 		RedirectURI:  cfg.OauthClient.RedirectURI,
 	}
 	assetService := service.NewAssetService(chainRepo, tokenRepo, redisClient)
-	walletService := service.NewWalletService(walletRepo, tssClient)
+	walletService := service.NewWalletService(walletRepo, tssClient, ethClient)
 	userService := service.NewUserService(userRepo, walletRepo, redisClient)
 	authService := service.NewAuthService(userService, walletService, tokenManager, oauthClient)
 	transactionService := service.NewTransactionService(transactionRepo, walletService, assetService, ethClient, tssClient)
 
 	// router
-	router := api.NewRouter(authService, assetService, userService, transactionService, tokenManager)
+	router := api.NewRouter(authService, assetService, userService, transactionService, tokenManager, walletService)
 
 	// run router
 	logger.Info("Running router")
