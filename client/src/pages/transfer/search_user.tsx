@@ -1,16 +1,16 @@
 import { useState } from "preact/hooks";
 import { useDebouncedCallback } from "use-debounce";
 import { getUserByEmail } from "../../services/api/transfer.api";
-import { User } from "../../types/transfer";
+import { User, Receiver } from "../../types/transfer";
 import avatar from "../../assets/png/default_avatar.jpg";
 import HeaderTransfer from "../../components/header/header_transfer";
 import { useGetProfileQuery } from "../../redux/features/profile/profileApi";
 import toast from "react-hot-toast";
 const SearchUser = ({ ...props }) => {
-  const { data: user } = useGetProfileQuery(undefined, {
+  const { data: userProfile } = useGetProfileQuery(undefined, {
     refetchOnMountOrArgChange: true,
   });
-  const [data, setData] = useState<User | null>();
+  const [data, setData] = useState<Receiver | null>();
   const [isLoading, setIsLoading] = useState<boolean | null>(null);
   const handleSelectUser = () => {
     props.handleStepTransfer("input_amount");
@@ -19,11 +19,13 @@ const SearchUser = ({ ...props }) => {
     setIsLoading(true);
     props.handleUserData(data);
   };
+
+  const wallet = userProfile?.payload.wallet;
   const debounced = useDebouncedCallback(async (value: string) => {
+    console.log("payload", wallet);
     if (
       value.trim() &&
-      user?.data?.userData?.email &&
-      value === user.data.userData.email
+      value === wallet.address
     ) {
       toast.error("Không thể chuyển tiền cho chính mình!");
       setIsLoading(false);
@@ -31,11 +33,13 @@ const SearchUser = ({ ...props }) => {
     }
     try {
       setIsLoading(true);
-      const response = await getUserByEmail(value);
-      if (response.status === 200) {
-        setData(response.data.data);
-        setIsLoading(false);
-      }
+      // const response = await getUserByEmail(value);
+      // if (response.status === 200) {
+      //   setData(response.data.data);
+      //   setIsLoading(false);
+      // }
+      setData({ address: value });
+      setIsLoading(false);
     } catch (error: any) {
       setData(null);
       setIsLoading(null);
@@ -84,11 +88,11 @@ const InfoUser = ({ ...props }) => {
         >
           <img
             class={`w-10 h-10 rounded-full object-cover`}
-            src={props.data.avatar ? props.data.avatar : avatar}
+            // src={props.data.avatar ? props.data.avatar : avatar} -- for testing purpose
+            src={avatar}
           ></img>
           <div class={`ml-4`}>
-            <h1 class={`text-lg`}>{props.data.full_name}</h1>
-            <h1 class={`text-sm text-gray-500`}>{props.data.email}</h1>
+            <h1 class={`text-lg`}>{props.data.address}</h1>
           </div>
         </div>
       )}

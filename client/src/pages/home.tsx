@@ -21,7 +21,7 @@ const getGreetingByTime = () => {
 const Home = () => {
   const dispatch = useAppDispatch();
   const {
-    data: users,
+    data: profileData,
     isLoading,
     refetch,
   } = useGetProfileQuery(undefined, {
@@ -29,11 +29,10 @@ const Home = () => {
   });
   const { isUpdated } = useAppSelector((state) => state.wallet);
 
-  const { userData, walletData } = users?.data || {
+  const { user: userData, wallet: walletData } = profileData?.payload || {
     userData: undefined,
     walletData: undefined,
   };
-
   useEffect(() => {
     if (isUpdated) {
       refetch();
@@ -120,7 +119,7 @@ const Home = () => {
         {/* <div className="bg-white h-fit rounded-lg m-2 md:max-w-sm sm:w-full w-full border shadow-lg"> */}
         <div className="bg-white rounded-lg m-2 md:max-w-sm sm:w-full w-full border shadow-lg h-full">
           <h1 className="font-semibold text-sm m-4">Giao dịch gần đây</h1>
-          <RecentTransaction />
+          <RecentTransaction  wallet_address={walletData?.address}/>
         </div>
       </div>
     </>

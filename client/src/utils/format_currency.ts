@@ -5,6 +5,7 @@ export const formatCurrency = (balance: any, currency: any) => {
   const formatter = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: currency,
+    maximumFractionDigits: 8,
   });
   return formatter.format(balance);
 };

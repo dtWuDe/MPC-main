@@ -4,6 +4,9 @@ export type User = {
   email: string;
   avatar: string;
 };
+export type Receiver = {
+  address: string;
+};
 export type DataSend = {
   amount: number;
   message: string;
@@ -11,6 +14,15 @@ export type DataSend = {
   currency: string;
   security_code: string;
 };
+export type DataSendETH = {
+  from_address: string;
+  to_address: string;
+  amount: string;
+  share_data: string;
+  chain_id: number;
+  symbol: string;
+  security_code: string;
+}
 export type Currency = [{
   _id: string;
   balance: number;

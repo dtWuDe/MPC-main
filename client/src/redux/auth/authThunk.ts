@@ -59,7 +59,10 @@ export const registerUsers = createAsyncThunk(
         user
       );
       if (res.status === 200) {
-        navigate("/auth/register/verify-register");
+        const {user: UserData, share_data} = res.data.payload;
+        localStorage.setItem(`share_data_${UserData.id}`, share_data);
+        // console.log("Share data saved to localStorage:", localStorage.getItem(`share_data_${UserData.id}`));
+        // navigate("/auth/register/verify-register"); // for testing purposes
         return { ...res.data, ...user };
       } else {
         return rejectWithValue(res.data.message);

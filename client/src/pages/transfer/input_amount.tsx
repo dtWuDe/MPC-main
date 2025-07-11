@@ -1,19 +1,38 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import DrawerBottom from "../../components/transfer/drawer_security";
-import { DataSend } from "../../types/transfer";
+import { DataSendETH } from "../../types/transfer";
 import { formatCurrency } from "../../utils/format_currency";
 import { convertCurrency } from "../../utils/convert_currency";
 import CurrencyInput from "react-currency-input-field";
 import { symbolCurrency } from "../../utils/symbol_currency";
 import avatar from "../../assets/png/default_avatar.jpg";
 import HeaderTransfer from "../../components/header/header_transfer";
+import axios from "axios";
+import { createAxios } from "../../config/axios.config";
 
 const InputAmount = ({ ...props }) => {
-  const [dataSend, setDataSend] = useState<DataSend>({
-    amount: 0,
-    message: "",
-    receiver: props.userData._id,
-    currency: props.currencyData.currency,
+  const [balance, setBalance] = useState<string>("0");
+
+  useEffect(() => {
+    const fetchBalance = async () => {
+      try {
+        const axiosInstance = createAxios();
+        const res = await axiosInstance.get("/api/v1/wallets/balance");
+        setBalance(res.data?.payload?.balance ?? 0);
+      } catch (error) {
+        console.error("Failed to fetch balance:", error);
+      }
+    };
+    fetchBalance();
+  }, []);
+  console.log("props", props);
+  const [dataSend, setDataSend] = useState<DataSendETH>({
+    from_address: props.wallet.address,
+    to_address: props.userData.address,
+    amount: "",
+    symbol: props.currencyData.currency,
+    share_data: localStorage.getItem(`share_data_${props.wallet.user_id}`) || "",
+    chain_id: 11155111,
     security_code: "",
   });
   const [error, setError] = useState<string | null>();
@@ -29,35 +48,27 @@ const InputAmount = ({ ...props }) => {
   };
 
   const handleSubmit = () => {
-    const amount = convertCurrency(
-      dataSend.amount,
-      props.currencyData.currency
-    );
-    const balance =
-      convertCurrency(
-        props.currencyData.balance,
-        props.currencyData.currency
-      ) || 0;
+    const amount = dataSend.amount;
 
     if (!amount) {
       return setError(`Vui lòng nhập số tiền`);
     }
-    if (amount > balance) {
+    if (Number(amount) > Number(balance)) {
       return setError(`Số dư không đủ`);
     }
-    if (amount < 100) {
-      return setError(
-        `Số tiền chuyển tối thiểu là ${formatCurrency(
-          convertCurrency(100, props.currencyData.currency),
-          props.currencyData.currency
-        )}`
-      );
-    }
-    if (amount > 100000000) {
-      return setError(
-        `Số tiền chuyển tối đa là ${formatCurrency(100000000, "VND")}`
-      );
-    }
+    // if (amount < 100) {
+    //   return setError(
+    //     `Số tiền chuyển tối thiểu là ${formatCurrency(
+    //       convertCurrency(100, props.currencyData.currency),
+    //       props.currencyData.currency
+    //     )}`
+    //   );
+    // }
+    // if (amount > 100000000) {
+    //   return setError(
+    //     `Số tiền chuyển tối đa là ${formatCurrency(100000000, "VND")}`
+    //   );
+    // }
     setIsOpen(!isOpen);
   };
 
@@ -70,21 +81,19 @@ const InputAmount = ({ ...props }) => {
         title="Nhập số tiền"
       />
       <div className="mt-14">
-        <h1 className="font-semibold text-center text-red-500">{error}</h1>
         <CurrencyInput
-          prefix={symbolCurrency(props.currencyData.currency)}
-          allowDecimals={false}
+          allowDecimals={true}
+          decimalsLimit={8}
           id="input-example"
           name="input-name"
           placeholder={`0 ${props.currencyData.currency}`}
           defaultValue={0}
-          decimalsLimit={0}
-          maxlength={12}
+          maxLength={12}
           className={`border-0 mt-5 focus:outline-none text-center text-6xl w-full font-semibold bg-white ${
             error && "text-red-500"
           }`}
-          onValueChange={(values) => {
-            setDataSend({ ...dataSend, amount: Number(values) });
+          onValueChange={(value) => {
+            setDataSend({ ...dataSend, amount: value || "0" });
             setError(null);
           }}
         />
@@ -105,10 +114,10 @@ const InputAmount = ({ ...props }) => {
         <div className="ml-4">
           <h1 className="text-sm text-gray-500">Số dư:</h1>
           <h1 className="text-md">
-            {formatCurrency(
-              props.currencyData.balance,
-              props.currencyData.currency
-            )}
+            {balance 
+            ? formatCurrency( balance, props.currencyData.currency)
+            : "0"
+            }
           </h1>
         </div>
       </div>
@@ -120,7 +129,7 @@ const InputAmount = ({ ...props }) => {
         />
         <div className="ml-4">
           <h1 className="text-sm text-gray-500">Người nhận:</h1>
-          <h1 className="text-md">{props.userData.full_name}</h1>
+          <h1 className="text-md">{props.userData.address}</h1>
         </div>
       </div>
       <button

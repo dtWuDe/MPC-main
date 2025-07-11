@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 import FormatIcon from "./format_icon";
 
 const ItemTransaction = ({ ...props }) => {
-  if (!props.item || !props.item._id) {
+  if (!props.item || !props.item.id) {
     return null;
   }
 
@@ -17,7 +17,7 @@ const ItemTransaction = ({ ...props }) => {
             <FormatIcon type={props.item.type} />
             <div className="ml-2">
               <FormatTitle item={props.item} userID={props.userID} />
-              <h1 className="text-sm">{formatDate(props.item.createdAt)}</h1>
+              <h1 className="text-sm">{formatDate(props.item.created_at)}</h1>
             </div>
           </div>
           <div>

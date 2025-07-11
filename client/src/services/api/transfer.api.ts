@@ -8,7 +8,7 @@ export const getUserByEmail = async (email: string) => {
 };
 export const sendMoneyAPI = async (body: DataSend) => {
   const axiosInstance = createAxios();
-  return await axiosInstance.post(`/api/v1/wallet/send-money`, body, {
+  return await axiosInstance.post(`/api/v1/transactions/`, body, {
     withCredentials: true,
   });
 };
